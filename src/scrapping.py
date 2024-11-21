@@ -21,7 +21,7 @@ def scrap(url):
             section_name = sec.find('h2')
             if section_name is None:
                 continue
-            content = sec.find_all(['p', 'span'])
+            content = sec.find_all(['p', 'span', 'li'])
 
             sections[section_name.get_text(strip=True)] = '\n'.join([c.get_text(strip=True) for c in content])
 

@@ -12,17 +12,11 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 
 from pydantic import BaseModel
 
+from src.schemas import Vaga
+
 import os
 
 load_dotenv()
-
-
-class Vaga(BaseModel):
-    descricao: str
-    responsabilidades: str
-    requisitos: str
-    beneficios: str
-
 
 def load_document(file):
     file_path = file.name
@@ -34,7 +28,7 @@ def load_document(file):
 def updateCV(CV, vaga):
 
     CV1 = load_document(CV)
-    
+
     llm = ChatOpenAI(temperature=0, model="gpt-4o")
 
     base_rule = "Você é um ajudante para candidatos que ajuda a entender o que é necessário para se candidatar a uma determinada vaga de emprego."
@@ -139,7 +133,7 @@ def updateCV(CV, vaga):
                     - Clientes: Mais de 4 milhões de consumidores.
                     - Diferencial: Diversidade, inovação e foco na qualidade dos serviços.
             """
-    rule_4 = "A vaga em questão é: {vaga}"
+    rule_4 = f"A vaga em questão é: {vaga}"
 
     messages = [
         SystemMessage(base_rule),
@@ -153,35 +147,19 @@ def updateCV(CV, vaga):
 
     llm_structured = llm.with_structured_output(Vaga)
 
-    vaga = prompt1 | llm_structured
-
-    vaga_res = vaga.invoke(input={"vaga": vaga})
-
-    # base_rule = "Você será um corretor de texto, e trá que corrigir um currículo que foi carregado em texto."
-    # rule_1 = "Você tem que limpar o texto e reescrever todas as palavras na mesma ordem e formatação."
-    # rule_2 = "É necessário que as informações se amntenha igual ao original, apenas corrigindo erros de digitação e gramática."
-    # rule_3 = "O texto que você deve limpar é : {CV}"
+    res_vaga = prompt1 | llm_structured
 
 
-    # messages2 = [
-    #     SystemMessage(base_rule),
-    #     SystemMessage(rule_1),
-    #     SystemMessage(rule_2),
-    #     SystemMessage(rule_3),
-    # ]
+    vaga_res = res_vaga.invoke(input={})
 
-    # prompt2 = ChatPromptTemplate.from_messages(messages2)
-
-    # cv_corrigido = prompt2 | llm
-
-    base_rule = "Você agora é um assistente de RH, e precisa adaptar um currículo a uma vaga de acordo com os principais pontos necessários para essa."
-    rule_1 = f"O currículo a ser adaptado é: {CV1}"
-    rule_2 = "Você não pode alterar o currículo com informações que não foram passadas anteriormente dentro do próprio currículo."
-    rule_3 = f"Você deve apenas adaptar o próprio conteúdo de acordo com a vaga: {vaga_res}. Adicionando principalmente palavras-chave da vaga."
-    rule_4 = "O currículo deve manter o máximo possível da formatação anterior, alterando apenas se for melhorar a leitura do currículo. Deve manter principalmente as habilidades de hard skills, mesmo que adaptadas."
-    rule_5 = "O currículo adaptado deve sair em formatação markdown."
-    rule_6 = "Não adicione menções diretas à empresa ou pessoa que está contratando."
-    rule_7 = """Quando adicionar competências e habilidadaes, faça de forma direta e clara, sem copiar direto da descrição da vaga. Além disso, coloque apenas habilidades extritamente técnicas.
+    base_rule = "Você agora é um assistente de RH, e precisa reconstruir um currículo de acordo com os principais pontos necessários para uma vaga."
+    arule_1 = f"O currículo a ser adaptado é: {CV1}"
+    arule_2 = "Você deve adaptar o currículo atual para um linguajar que mais cabe à vaga."
+    arule_3 = f"Você deve apenas adaptar o próprio conteúdo de acordo com a vaga: {vaga_res}. Adicionando principalmente palavras-chave da vaga."
+    arule_4 = "Reformule as seções do currículo de forma a melhorar a compatibilidade do currículo com a vaga. Deve manter as habilidades de hard skills, mas adaptadas como possível."
+    arule_5 = "O currículo adaptado deve sair em formatação markdown."
+    arule_6 = "Não adicione menções diretas à empresa ou pessoa que está contratando."
+    arule_7 = """Quando adicionar competências e habilidadaes, faça de forma direta e clara, sem copiar direto da descrição da vaga. Além disso, coloque apenas habilidades extritamente técnicas.
                 Exemplo:
                 Das habilidades descritas abaixo:
                     - Desenvolvimento e manutenção de aplicações web escaláveis
@@ -197,25 +175,33 @@ def updateCV(CV, vaga):
                     - Experiência com metodologias ágeis
                     - Python, Django, Flask, SQL, HTML, CSS, JavaScript, Git
     """
+    rule_8 = "Reformule a parte de experiências de forma a melhor adaptar à vaga, mas não invente nada, apenas esecreva de uma melhor maneira."
+    rule_9 = """Na parte de Objetivo, adapte o original mas focando em áreas de atuações em vez de mostrar o foco do candidato. 
+                Então em vez de escrever: Atuar no desenvolvimento e manutenção de aplicações web, com foco em garantir a funcionalidade, performance e segurança dos sistemas. 
+                Escrever : Atuar como desenvolvedor Full Stack em aplicaçãoes Web, com foco em segurança de sistemas.
+                NÂO use verbos nessa seção além de 'atuar e certamente NÂO USE o verbo 'garantir'.   
+            """
+    rule_10 = "Elabore um pouco mais em cada seção sobre os assuntos em comum com a vaga"
     rule_15 = "Aqui está o currículo adaptado:"
 
     messages3 = [
         SystemMessage(base_rule),
-        SystemMessage(rule_1),
-        SystemMessage(rule_2),
-        SystemMessage(rule_3),
-        SystemMessage(rule_4),
-        SystemMessage(rule_5),
-        SystemMessage(rule_6),
-        SystemMessage(rule_7),
+        SystemMessage(arule_2),
+        SystemMessage(arule_3),
+        SystemMessage(arule_4),
+        SystemMessage(arule_5),
+        SystemMessage(arule_6),
+        SystemMessage(arule_7),
+        SystemMessage(rule_8),
+        SystemMessage(rule_9),
+        SystemMessage(rule_10),
+        SystemMessage(arule_1),
         SystemMessage(rule_15),
     ]
 
+    llm2 = ChatOpenAI(temperature=0.1, model="gpt-4o")
     prompt3 = ChatPromptTemplate.from_messages(messages3)
-    chain = prompt3 | llm | StrOutputParser()
-
-    # cv_corrigido = cv_corrigido.invoke(input={"CV": CV1})
-    # print(cv_corrigido)
+    chain = prompt3 | llm2 | StrOutputParser()
 
     result = chain.invoke({})
     return result

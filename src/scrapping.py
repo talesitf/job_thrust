@@ -23,11 +23,11 @@ def scrap(url):
                 continue
             content = sec.find_all(['p', 'span', 'li'])
 
-            sections[section_name.get_text(strip=True)] = '\n'.join([c.get_text(strip=True) for c in content])
+            sections[section_name.get_text(strip=True)] = '\n\n'.join([c.get_text(strip=True) for c in content])
 
         for s,v in sections.items():
             final+=s
-            final+= "\n" + v
+            final+= "\n" + v + "\n"
 
         return final
     else:

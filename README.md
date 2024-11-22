@@ -2,6 +2,8 @@
 
 Avaiable at: [Job-Thrust](10.103.0.28:7860)
 
+Pitch link: [Pitch](https://youtu.be/QKZND7Nk8YE)
+
 If would want to run it locally, you can do it by clonig te repo and running the following command:
 
 ```bash
@@ -94,8 +96,22 @@ Job-Thrust was tested by three individuals: two job seekers and one HR professio
 
 ## **Conclusion**
 
-Job-Thrust addresses a gap in the job application process by combining advanced AI with an easy-to-use platform. It empowers job seekers to present tailored résumés, enhancing their chances of landing jobs and helping employers identify the most suitable candidates. With positive feedback from both job seekers and HR professionals, Job-Thrust demonstrates its potential to transform the way job applications are handled.
+Job-Thrust addresses a gap in the job application process by combining advanced AI with an easy-to-use platform. It empowers job seekers to present tailored résumés, enhancing their chances of landing jobs and helping employers identify the most suitable candidates.
 
 ---
 
-URL do vpideo: [Job-Thrust](https://www.youtube.com/watch?v=3QOvzZ1J2ZM)
+## Future Work
+
+- **Improving Accuracy:** Enhance the AI model to avoid adding inaccurate details to the résumé.
+- **User Interface:** Develop a more user-friendly interface to guide users through the résumé adaptation process.
+- **Integration:** Implement a feature to directly apply to job offers from the platform.
+
+---
+
+This project is aimed at A:
+
+- **Problem:** Simplifying the process of job applications by enabling job seekers to effortlessly tailor their résumés to specific job offers. Happy if feedback is positive
+- **Uniqueness:** Adapts to many types of job offers, as long as there is affinity between the résumé and the job offer. Is not a jack-of-all-trades solutions like others services, but achieves better results for your application.
+- **Impact:** Tested with potential users and judged by an HR proefessional.
+- **Tools:** This tools doesn't relies on information providede by LLM, but rather relies on accurate prompts and tool to extract and adapt information from job offers and résumés.
+- **Research:** Examples of existing solutions and their limitations.
